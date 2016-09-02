@@ -6,6 +6,7 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <members>FieldChangeEvent</members>
         <members>LightningDataTable</members>
         <members>LightningFieldSection</members>
         <members>LightningFields</members>
