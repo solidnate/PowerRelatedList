@@ -26,4 +26,10 @@ Use the component in AppBuilder for more info
 
 * LightningFields: add quick-edit fields to anything with just attributes
 
+<a href="https://githubsfdeploy.herokuapp.com">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
+
 
