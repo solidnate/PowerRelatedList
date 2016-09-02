@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>PowerRelatedListCtrl</members>
+        <members>PowerRelatedListCtrlTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>LightningDataTable</members>
+        <members>LightningFieldSection</members>
+        <members>LightningFields</members>
+        <members>PowerRelatedList</members>
+        <members>PowerRelatedList2</members>
+        <members>ShaneSVGIcon</members>
+        <members>SingleFieldDisplayer</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+    <types>
+        <members>PRL_lodash</members>
+        <members>lodash</members>
+        <name>StaticResource</name>
+    </types>
+    <version>37.0</version>
+</Package>

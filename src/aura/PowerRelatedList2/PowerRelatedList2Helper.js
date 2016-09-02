@@ -19,12 +19,26 @@
         //public static String whatsMyPlural(string objtype){
         action.setParams({"objtype" : component.get("v.objectName")});
         action.setCallback(self, function (a){
-           console.log("plural returned!")
-           console.log(a)
-           console.log(a.getReturnValue);           
-           component.set("v.pluralLabel", a.getReturnValue());            
+            //console.log("plural returned!")
+            //console.log(a)
+            //console.log(a.getReturnValue);           
+            component.set("v.pluralLabel", a.getReturnValue());            
         });
         $A.enqueueAction(action);
+    },
+    
+    setNewRecord: function (component){
+    	if (component.get("v.allowAdd")){
+            var record = {};
+            record[component.get("v.lookupField")] = component.get("v.recordId");            
+            component.set("v.newRecord", record);            
+        }        
+    },
+    
+    buildQuery: function (component){
+        var soql = "select Id, " + component.get("v.displayFields") + " from " + component.get("v.objectName") + " where " + component.get("v.lookupField") + " = '" + component.get("v.recordId") + "'";		
+        //console.log(soql);
+        return soql;
     },
     
     query: function (component, soql){
@@ -33,11 +47,32 @@
         action.setCallback(self, function(a){
             console.log("query results");	
             var records = JSON.parse(a.getReturnValue())
-            console.log(records);
+            //console.log(records);
             component.set("v.results", records);
             component.set("v.filteredResults", records); //initial unfiltered list
         });
         $A.enqueueAction(action);        
+    },
+
+    filter : function (component){
+        var filter = component.get("v.filter");        
+        console.log("in debounced function");
+        console.log(filter);
+        if (!filter){
+            console.log("no filter");
+            component.set("v.filteredResults", component.get("v.results"));    
+        } else {
+            console.log("filter present: " + filter);
+            var goodStuff = _.filter(component.get("v.results"), function(record){
+                var contains = false;
+                _.forEach(record, function (value){
+                    contains = contains || _.includes(_.toString(value), filter);
+                });
+                return contains;
+            });
+            component.set("v.filteredResults", goodStuff);            
+        }
+        this.sort(component);
     },
     
     //sort always occurs after filter

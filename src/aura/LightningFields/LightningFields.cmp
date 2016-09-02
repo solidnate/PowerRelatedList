@@ -1,0 +1,35 @@
+<aura:component controller="PowerRelatedListCtrl">
+    
+    <ltng:require scripts="{!$Resource.PRL_lodash}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <!--public-->
+    <aura:attribute name="record" type="object" required="false"/>
+    <aura:attribute name="displayFields" type="string" required="true" />
+    <aura:attribute name="helpFields" type="string" required="false" description="comma separated list of field API names where you want to display the help text INSTEAD of the Label"/>
+    <aura:attribute name="sObjectType" type="string" required="true" />
+    <aura:attribute name="instantSave" type="boolean" default="true"/>
+    <aura:attribute name="columns" type="integer" default="2"/>
+    <aura:attribute name="allEditable" type="boolean" default="false"/>
+    
+    <!--internal-->
+    <aura:attribute name="displayFieldsArray" type="object[]" />
+    <aura:attribute name="editableFields" type="string"/>
+
+    <div class="slds-grid slds-wrap slds-grid--pull-padded">
+        <aura:iteration items="{!v.displayFieldsArray}" var="field">
+            <div class="{!'slds-form-element slds-col--padded slds-size--1-of-' + v.columns}">
+                
+                <!--show label-->                         
+                <label class="{!field.label == 'label' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.label }</label>
+                
+                <!--show help-->
+                <label class="{!field.label == 'help' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.help || field.describe.label}</label>
+    
+    
+                <div class="slds-form-element__control">
+                    <c:SingleFieldDisplayer record="{!v.record}" fieldDescribe="{!field}" instantSave="{!v.instantSave}"/>
+                </div>
+            </div>
+        </aura:iteration>
+    </div>
+</aura:component>

@@ -8,6 +8,7 @@
             return outputArray;
         } catch(err){
             console.log("failed at building CSL array");
+            console.log(err);
             //console.log("lodash is defined?: " + (false || _));
             //intended to handle the "CSL is null scenario"
             return null;
@@ -26,11 +27,14 @@
     },
     
     describe: function (component, objectName){
-        //console.log("displayFields value is:");
-        //console.log(component.get("v.displayFields"))
+        console.log("displayFields value is:");
+        console.log(component.get("v.displayFields"))
         var fieldsArray = this.CSL2Array(component.get("v.displayFields"));
-        //console.log(fieldsArray);
+        console.log(fieldsArray);
         var editableFields = this.CSL2Array(component.get("v.editableFields"));
+        console.log("Editable");
+        console.log(editableFields);
+        var helpFields = this.CSL2Array(component.get("v.helpFields"));
         
         //	public static String describe(String objtype) {
         var action = component.get("c.describe");
@@ -38,22 +42,24 @@
         action.setCallback(this, function (a){
             var displayFieldsArray=[];
             
-            //console.log("result in callback:");
+            console.log("result in callback:");
             var output = JSON.parse(a.getReturnValue());
             //component.set("v.pluralLabel", output.objectProperties.pluralLabel);
-            //console.log(output.fields);
+            console.log(output.fields);
             //now, only get the ones that are in the displayfieldsList            
-            //console.log(fieldsArray);
+            console.log(fieldsArray);
             
             _.forEach(fieldsArray, function(value){
                 //check for reference dot
                 if (!value.includes(".")){ 
                     //just a normal, non-reference field
+                    console.log("includes editable : " + _.includes(editableFields, value));
                     var temp = {
                         "describe" : _.find(output.fields, {"name" : value}), 
                         "original": value,
-                        "editable" : _.includes(editableFields, value),
-                        "related" : false
+                        "editable" : editableFields && _.includes(editableFields, value),
+                        "related" : false,
+                        "label" : helpFields && _.includes(helpFields, value) ? 'help' : 'label'
                     };                    
                     displayFieldsArray.push(temp);                    
                 } else { //it's a relationship/reference field                    
@@ -61,20 +67,21 @@
                         "describe": value, //placeholder, will update late with related object describe
                         "editable":false, 
                         "original":value,
-                        "related":true
+                        "related":true,
+                        "label":"label"
                     });
                 }
             });
             
             //first (and possibly only) setting. Will update if parent fields found
             component.set("v.displayFieldsArray", displayFieldsArray);            
-            //console.log("done with normal fields");
-            //console.log(displayFieldsArray);
+            console.log("done with normal fields");
+            console.log(displayFieldsArray);
             
             //related objects (up one level only!)
             _.forEach(fieldsArray, function(value){                
                 if (value.includes(".")){
-                    //console.log("dependentField:" + value);
+                    console.log("dependentField:" + value);
                     var parentDesribe = component.get("c.describe");
                     var parentObjectName = value.split(".")[0].replace("__r", "__c"); //replaces if custom
                     //do a describe for that object
@@ -85,7 +92,7 @@
                         displayFieldsArray = component.get("v.displayFieldsArray");
                         //console.log(response)                        
                         var relatedOutput = JSON.parse(response.getReturnValue());
-                        ////console.log(relatedOutput);
+                        //console.log(relatedOutput);
                         //get the describe for that field
                         //console.log("searched name is: " + value.split(".")[1])
                         temp = {"describe" : _.find(relatedOutput.fields, {"name" : value.split(".")[1]}) }

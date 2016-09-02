@@ -6,9 +6,13 @@
     <aura:attribute name="displayFields" type="string" required="true" default="Name, Phone, Email"/>
     <aura:attribute name="editableFields" type="string" required="false" default="Phone"/>
     <aura:attribute name="showFilter" type="boolean" default="false"/>
+    <aura:attribute name="allowAdd" type="boolean" default="true"/>
+    <aura:attribute name="addRecordTypeId" type="string" default="01215000001MWZP" required="false"/>
     
     <!--internal only attributes-->
+    <aura:attribute name="newRecord" type="object"/>
     <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="adding" type="boolean" default="false"/>
     <aura:attribute name="results" type="object[]"/>
     <aura:attribute name="filter" type="string"/>
     <aura:attribute name="filteredResults" type="object[]"/>
@@ -19,39 +23,55 @@
     <!--handler for filter changes-->
     <aura:handler name="change" value="{!v.filter}" action="{!c.filter}"/>
     <aura:handler event="ltng:selectSObject" action="{!c.handleSelect}"   />
-                  
+    <aura:handler event="c:FieldChangeEvent" action="{!c.handleFieldChange}"   />
+
     <div class="slds-card">
         <div class="slds-card__header slds-grid">
             <div class="slds-media slds-media--center slds-has-flexi-truncate">
-                <!--placeholder.  TODO:figure out how to get dynamic LEX icons-->
-                <!--div class="slds-media__figure">
-<svg aria-hidden="true" class="slds-icon slds-icon-standard-contact slds-icon*small">
-      <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
-     </svg>
-    </div-->
+                
                 <div class="slds-media__body slds-clearfix">
-                    <aura:renderIf isTrue="{!v.showFilter}">
-                        <div class="slds-form-element slds-float--right">                                    
-                            <ui:inputText value="{!v.filter}" updateOn="keyup" class="slds-input" placeholder="Type to Filter"/>
-                        </div>
-                    </aura:renderIf> 
-                    
+                    <div class="slds-form--inline slds-float--right">
+                        
+                        <aura:renderIf isTrue="{!v.showFilter}">      
+                            <div class="slds-form-element">
+                                <ui:inputText value="{!v.filter}" updateOn="keyup" class="slds-input" placeholder="Type to Filter"/>                            
+                            </div>
+                        </aura:renderIf> 
+                        <aura:renderIf isTrue="{!v.allowAdd}">                    
+                            <div class="slds-form-element">
+                                <button class="slds-button slds-button--neutral slds-button--small" onclick="{!c.createRecord}">New</button>					
+                            </div>
+                        </aura:renderIf>
+                    </div>
                     <h2 class="slds-text-heading--small slds-truncate">{!v.pluralLabel} ({!v.results.length})</h2>
                 </div>
             </div>
-            <!-- 
-<div class="slds-no-flex">
-    <div class="slds-button-group">
-     <button class="slds-button slds-button&neutral slds-button&small" onclick="{!c.createRecord}">New</button>					
-    </div>
-   </div> 
--->
+            
+            
         </div>
         <div class="slds-card__body" id="tableholder">
             <c:LightningDataTable sObjectType="{!v.objectName}" results="{!v.filteredResults}" 
                                   displayFields="{!v.displayFields}" editableFields="{!v.editableFields}" />
         </div>
+        
+        <aura:renderIf isTrue="{!v.adding}">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">                    
+                    <h2 id="header43" class="slds-text-heading--medium">Add {!v.pluralLabel}</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <c:LightningFields allEditable="true" displayFields="{!v.displayFields}" sObjectType="{!v.objectName}" record="{!v.newRecord}" instantSave="false"/>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.cancelCreate}">Cancel</button>
+                    <button class="slds-button slds-button--neutral slds-button--brand" onclick="{!c.saveNewRecord}">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
         <!-- <div class="slds-card__footer"><a href="javascript:void(0);">View All <span class="slds-assistive-text">entity type</span></a></div> -->
-    </div>
+        </aura:renderIf>
+  </div>
     
 </aura:component>

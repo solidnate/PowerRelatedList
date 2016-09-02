@@ -1,0 +1,33 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="PowerRelatedListCtrl" >
+    
+    <aura:attribute name="displayFields" type="string" required="true" />
+    
+    <aura:attribute name="editableFields" type="string" required="false" default="" />
+    
+    <aura:attribute name="helpFields" type="string" required="false" description="comma separated list of field API names where you want to display the help text INSTEAD of the Label" default=""/>
+    <aura:attribute name="instantSave" type="boolean" default="true"/>
+    <aura:attribute name="sectionTitle" type="string" default=""/>
+    <aura:attribute name="columns" type="integer" default="2"/>
+
+    <aura:attribute name="record" type="object" />
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="sObjectName" type="String" />
+    
+    <ltng:require scripts="{!$Resource.PRL_lodash}" afterScriptsLoaded="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.sectionTitle}">
+        <h2 class="slds-section-title--divider">{!v.sectionTitle}</h2>
+    </aura:if>
+    <aura:if isTrue="{!v.record}">
+    <div class="slds-form slds-p-around--small">
+        <c:LightningFields record="{!v.record}"
+                           displayFields="{!v.displayFields}"
+                           helpFields="{!v.helpFields}"
+                           editableFields="{!v.editableFields}"
+                           instantSave="{!v.instantSave}"
+                           sObjectType="{!v.sObjectName}" 
+                           columns="{!v.columns}"/>
+    </div>
+        </aura:if>
+</aura:component>

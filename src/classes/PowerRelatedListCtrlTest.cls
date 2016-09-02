@@ -10,7 +10,7 @@ private class PowerRelatedListCtrlTest {
 	}
 	
     @isTest static void testPlural(){
-    	PowerRelatedListCtrl.describe('Case');    
+    	PowerRelatedListCtrl.whatsMyPlural('Case');    
     }
     
     @isTest static void testBadDescribe() {
@@ -21,6 +21,41 @@ private class PowerRelatedListCtrlTest {
 		list<case> cases = [select id from Case];
 		PowerRelatedListCtrl.updateField(cases[0].Id, 'Subject', 'your software REALLY sucks');
 	}
+    
+    @isTest static void testCreate(){        
+       	String fields = '{"Name": "TestName"' +
+		                    ',"AccountNumber" : "327823782"' + 
+            ',"AnnualRevenue" : 2500' +
+            ',"Rating" : "Hot" ' +
+            ',"Fax" : "5558957842" ' + 
+		                    '}';
+        system.debug(fields);
+        string result = PowerRelatedListCtrl.create('Account', fields);
+        system.debug(result);
+    }
+    
+    @isTest static void testBadFieldCreate(){        
+       	String fields = '{"Name": "TestName"' +
+		                    ',"NoOneWouldEverNameAFieldThis__c" : "327823782"' + 
+            ',"AnnualRevenue" : 2500' +
+            ',"Rating" : "Hot" ' +
+            ',"Fax" : "5558957842" ' + 
+		                    '}';
+        system.debug(fields);
+        string result = PowerRelatedListCtrl.create('Account', fields);
+        system.debug(result);
+    }
+    
+    @isTest static void testUnsetableFieldCreate(){        
+       	String fields = '{"Name": "TestName"' +
+            ',"CreatedDate" : 2500' +
+            ',"Rating" : "Hot" ' +
+            ',"Fax" : "5558957842" ' + 
+		                    '}';
+        system.debug(fields);
+        string result = PowerRelatedListCtrl.create('Account', fields);
+        system.debug(result);
+    }
     
     /* Fails in SDOs because of callout trigger / IFTTT app
     @isTest static void testOpptyUpdates() {
