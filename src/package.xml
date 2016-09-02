@@ -10,7 +10,6 @@
         <members>LightningDataTable</members>
         <members>LightningFieldSection</members>
         <members>LightningFields</members>
-        <members>PowerRelatedList</members>
         <members>PowerRelatedList2</members>
         <members>ShaneSVGIcon</members>
         <members>SingleFieldDisplayer</members>
