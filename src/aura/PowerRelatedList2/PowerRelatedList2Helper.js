@@ -10,7 +10,7 @@
             return outputArray;
         } catch(err){
             //intended to handle the "CSL is null scenario"
-            return null;
+            return [];
         }
     },
     

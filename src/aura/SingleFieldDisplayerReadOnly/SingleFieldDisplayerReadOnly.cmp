@@ -1,0 +1,9 @@
+<aura:component controller="PowerRelatedListCtrl">
+    <aura:attribute name="record" type="object" required="true"/>
+    <aura:attribute name="fieldDescribe" type="object" required="true"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	{!v.body}
+    
+</aura:component>

@@ -14,22 +14,43 @@
     <!--internal-->
     <aura:attribute name="displayFieldsArray" type="object[]" />
     <aura:attribute name="editableFields" type="string"/>
-
-    <div class="slds-grid slds-wrap slds-grid--pull-padded">
-        <aura:iteration items="{!v.displayFieldsArray}" var="field">
-            <div class="{!'slds-form-element slds-col--padded slds-size--1-of-' + v.columns}">
-                
-                <!--show label-->                         
-                <label class="{!field.label == 'label' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.label }</label>
-                
-                <!--show help-->
-                <label class="{!field.label == 'help' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.help || field.describe.label}</label>
+    <aura:attribute name="chunks" type="object[]"/>
     
-    
-                <div class="slds-form-element__control">
-                    <c:SingleFieldDisplayer record="{!v.record}" fieldDescribe="{!field}" instantSave="{!v.instantSave}"/>
+    <aura:iteration items="{!v.chunks}" var="chunk">
+        <div class="slds-grid slds-wrap slds-grid--pull-padded chunk">
+            <aura:iteration items="{!chunk}" var="field">
+                <div class="{!'slds-form-element slds-col--padded slds-size--1-of-' + v.columns}">
+                    
+                    <!--show label-->                         
+                    <label class="{!field.label == 'label' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.label }</label>
+                    
+                    <aura:if isTrue="{!and(field.describe.help, field.label == 'label')}">   
+                        
+                        
+                        <lightning:icon iconName="utility:info" alternativeText="get help" size="x-small"/>
+                        <lightning:tooltip content="{!field.describe.help}">
+                            <span>&nbsp;</span>
+                        </lightning:tooltip>
+                        
+                    </aura:if>
+                    
+                    <!--show help-->
+                    <label class="{!field.label == 'help' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.help || field.describe.label}</label>
+                    
+                    
+                    <div class="slds-form-element__control">
+                        <!--can read, can't edit-->
+                            <aura:if isTrue="{!and(field.describe.userCanRead, !field.editable)}">
+                                <c:SingleFieldDisplayerReadOnly record="{!v.record}" fieldDescribe="{!field}"/>
+                            </aura:if>
+                            <!--full read-write-->
+                            <aura:if isTrue="{!and(field.describe.userCanRead, field.editable)}">
+                                <c:SingleFieldDisplayer record="{!v.record}" fieldDescribe="{!field}" instantSave="{!v.instantSave}"/>
+                            </aura:if>
+                    </div>
                 </div>
-            </div>
-        </aura:iteration>
-    </div>
+            </aura:iteration>
+        </div>
+    </aura:iteration>
+    {!v.body}
 </aura:component>

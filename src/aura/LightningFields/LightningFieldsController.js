@@ -4,7 +4,7 @@
         if(component.get("v.allEditable")){
             component.set("v.editableFields", component.get("v.displayFields"));
         }
-        helper.describe(component, component.get("v.sObjectType"));         
+        helper.describe(component, component.get("v.sObjectType"));  
     }
     
 })

@@ -10,7 +10,7 @@
             console.log("failed at building CSL array");
             //console.log("lodash is defined?: " + (false || _));
             //intended to handle the "CSL is null scenario"
-            return null;
+            return [];
         }
     },
     
@@ -34,6 +34,7 @@
         
         //	public static String describe(String objtype) {
         var action = component.get("c.describe");
+        action.setStorable();
         action.setParams({"objtype" : objectName }); 
         action.setCallback(this, function (a){
             var displayFieldsArray=[];

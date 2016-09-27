@@ -1,5 +1,6 @@
-.THIS .slds-form-element {
-    border-bottom: 1px solid whitesmoke;
-    height:60px;
-    margin-bottom: 15px;
+.THIS.chunk {
+        border-bottom: 1px solid whitesmoke;
+        padding-bottom: 15px;
+    	padding-top: 15px;
+    	min-height:75px;
 }

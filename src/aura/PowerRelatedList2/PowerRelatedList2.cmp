@@ -25,36 +25,26 @@
     <aura:handler event="ltng:selectSObject" action="{!c.handleSelect}"   />
     <aura:handler event="c:FieldChangeEvent" action="{!c.handleFieldChange}"   />
 
-    <div class="slds-card">
-        <div class="slds-card__header slds-grid">
-            <div class="slds-media slds-media--center slds-has-flexi-truncate">
-                
-                <div class="slds-media__body slds-clearfix">
-                    <div class="slds-form--inline slds-float--right">
-                        
-                        <aura:renderIf isTrue="{!v.showFilter}">      
-                            <div class="slds-form-element">
-                                <ui:inputText value="{!v.filter}" updateOn="keyup" class="slds-input" placeholder="Type to Filter"/>                            
-                            </div>
-                        </aura:renderIf> 
-                        <aura:renderIf isTrue="{!v.allowAdd}">                    
-                            <div class="slds-form-element">
-                                <button class="slds-button slds-button--neutral slds-button--small" onclick="{!c.createRecord}">New</button>					
-                            </div>
-                        </aura:renderIf>
+    <lightning:card title="{!v.pluralLabel + ' (' + v.results.length + ')'}">
+        <aura:set attribute="actions">
+            <div class="slds-form--inline">
+                <aura:if isTrue="{!v.showFilter}">      
+                    <div class="slds-form-element">
+                        <ui:inputText value="{!v.filter}" updateOn="keyup" class="slds-input" placeholder="Type to Filter"/>                            
                     </div>
-                    <h2 class="slds-text-heading--small slds-truncate">{!v.pluralLabel} ({!v.results.length})</h2>
-                </div>
+                </aura:if>
+                <aura:if isTrue="{!v.allowAdd}">
+                    <lightning:button label="New" onclick="{!c.createRecord}"/>
+                </aura:if>
             </div>
-            
-            
-        </div>
-        <div class="slds-card__body" id="tableholder">
-            <c:LightningDataTable sObjectType="{!v.objectName}" results="{!v.filteredResults}" 
-                                  displayFields="{!v.displayFields}" editableFields="{!v.editableFields}" />
-        </div>
-        
-        <aura:renderIf isTrue="{!v.adding}">
+        </aura:set>
+        <c:LightningDataTable sObjectType="{!v.objectName}" results="{!v.filteredResults}" 
+          displayFields="{!v.displayFields}" editableFields="{!v.editableFields}" />
+      </lightning:card>
+
+
+      <!-- create modal -->
+      <aura:if isTrue="{!v.adding}">
         <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
                 <div class="slds-modal__header">                    
@@ -71,7 +61,5 @@
         </div>
         <div class="slds-backdrop slds-backdrop--open"></div>
         <!-- <div class="slds-card__footer"><a href="javascript:void(0);">View All <span class="slds-assistive-text">entity type</span></a></div> -->
-        </aura:renderIf>
-  </div>
-    
+    </aura:if>
 </aura:component>

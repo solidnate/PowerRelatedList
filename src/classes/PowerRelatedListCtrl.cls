@@ -14,6 +14,14 @@ public with sharing class PowerRelatedListCtrl {
     
     @remoteAction @AuraEnabled
     public static String describe(String objtype) {
+
+        /*string cacheKey = 'PRLdescribe' + objtype;
+        string existingValue = (string)Cache.Session.get(cacheKey);
+        if (existingValue != null){
+            return existingValue;
+        }*/
+        
+
         Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objtype);
         if (targetType == null) {
             return '[{"message":"The requested resource does not exist","errorCode":"NOT_FOUND"}]';
@@ -67,12 +75,18 @@ public with sharing class PowerRelatedListCtrl {
         objectProperties.put('pluralLabel', sobjResult.getLabelPlural());
         result.put('objectProperties', objectProperties);
         
+        //let's try to not do that hard work very often
+        /*if (Cache.Session.isAvailable()){
+            Cache.Session.put(cacheKey, JSON.serialize(result), 600);            
+        }*/
         return JSON.serialize(result);
     }
     
     
     @AuraEnabled
     public static void updateField(id recordId, string Field, string newValue){
+
+        
         system.debug(' in the update function');
         Schema.SObjectType sobjectType = recordId.getSObjectType();
         String sobjectName = sobjectType.getDescribe().getName();
@@ -113,46 +127,46 @@ public with sharing class PowerRelatedListCtrl {
         update obj;
     }
     /*
-	send up a JSON object of fields.  Do JSON.stringify on the js controller!
+    send up a JSON object of fields.  Do JSON.stringify on the js controller!
     //lovingly lifted from ngforce
-	*/
+    */
     
     @AuraEnabled
-    	public static String create(String objtype, String fields) {
-		Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objtype);
-		
-		Map<String, Schema.sObjectField> targetFields = targetType.getDescribe().fields.getMap();
+        public static String create(String objtype, String fields) {
+        Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objtype);
+        
+        Map<String, Schema.sObjectField> targetFields = targetType.getDescribe().fields.getMap();
 
-		SObject obj = targetType.newSObject();
+        SObject obj = targetType.newSObject();
 
-		Map<String, Object> fieldMap = null;
+        Map<String, Object> fieldMap = null;
 
-		String error = writeFields(objType, obj, fields);
-		if (error != null) {
-			return error;
-		}
+        String error = writeFields(objType, obj, fields);
+        if (error != null) {
+            return error;
+        }
 
-		try {
-			insert obj;
-		} catch (DMLException dmle) {
-			String fieldNames = '';
-			for (String field : dmle.getDmlFieldNames(0)) {
-				if (fieldNames.length() > 0) {
-					fieldNames += ',';
-				}
-				fieldNames += '"' + field + '"';
-			}
-			return '[{"fields":[' + fieldNames + '],"message":"' + dmle.getDmlMessage(0) + '","errorCode":"' + dmle.getDmlType(0).name() + '"}]';
-		}
+        try {
+            insert obj;
+        } catch (DMLException dmle) {
+            String fieldNames = '';
+            for (String field : dmle.getDmlFieldNames(0)) {
+                if (fieldNames.length() > 0) {
+                    fieldNames += ',';
+                }
+                fieldNames += '"' + field + '"';
+            }
+            return '[{"fields":[' + fieldNames + '],"message":"' + dmle.getDmlMessage(0) + '","errorCode":"' + dmle.getDmlType(0).name() + '"}]';
+        }
 
-		Map<String, Object> result = new Map<String, Object>();
-		result.put('id', obj.id);
-		result.put('object', obj);
+        Map<String, Object> result = new Map<String, Object>();
+        result.put('id', obj.id);
+        result.put('object', obj);
         result.put('errors', new List<String>());
-		result.put('success', true);
+        result.put('success', true);
 
-		return JSON.serialize(result);
-	}
+        return JSON.serialize(result);
+    }
     
     //lovingly lifted from ngforce
     public static Schema.DisplayType getFieldType(string objectName, string fieldname){
@@ -162,63 +176,65 @@ public with sharing class PowerRelatedListCtrl {
     }
 
 
-	private static String writeFields(String objtype, SObject obj, String fields) {
-		Map<String, Object> fieldMap = null;
-			fieldMap = (Map<String, Object>)JSON.deserializeUntyped(fields);
-			fieldMap.remove('attributes');
-		
+    private static String writeFields(String objtype, SObject obj, String fields) {
+        Map<String, Object> fieldMap = null;
+            fieldMap = (Map<String, Object>)JSON.deserializeUntyped(fields);
+            fieldMap.remove('attributes');
+        
 
-		Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objtype);
+        Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objtype);
 
-		Map<String, Schema.sObjectField> targetFields = targetType.getDescribe().fields.getMap();
+        Map<String, Schema.sObjectField> targetFields = targetType.getDescribe().fields.getMap();
 
-		try {
-			for (String key : fieldMap.keySet()) {
-				if (targetFields.get(key) == null) {
-					system.debug('[{"message":"Field ' + key + ' does not exist on object type ' + objtype + '","errorCode":"INVALID_FIELD"}]');
-					return '[{"message":"Field ' + key + ' does not exist on object type ' + objtype + '","errorCode":"INVALID_FIELD"}]';
-				}
+        try {
+            for (String key : fieldMap.keySet()) {
+                if (targetFields.get(key) == null) {
+                    system.debug('[{"message":"Field ' + key + ' does not exist on object type ' + objtype + '","errorCode":"INVALID_FIELD"}]');
+                    return '[{"message":"Field ' + key + ' does not exist on object type ' + objtype + '","errorCode":"INVALID_FIELD"}]';
+                }
 
-				Object value = fieldMap.get(key);
-				Schema.DisplayType valueType = targetFields.get(key).getDescribe().getType();
+                Object value = fieldMap.get(key);
+                Schema.DisplayType valueType = targetFields.get(key).getDescribe().getType();
 
-				if (value instanceof String && valueType != Schema.DisplayType.String) {
-					// Coerce an incoming String to the correct type
-					String svalue = (String)value;
+                if (value instanceof String && valueType != Schema.DisplayType.String) {
+                    // Coerce an incoming String to the correct type
+                    String svalue = (String)value;
 
-					if (valueType == Schema.DisplayType.Date) {
-						system.debug('doing ' + key + ' : ' + svalue);
-						obj.put(key, Date.valueOf(svalue));
-					} else if ( valueType == Schema.DisplayType.DateTime) {
-						obj.put(key, DateTime.valueOf(svalue));
-					} else if (valueType == Schema.DisplayType.Percent ||
-					           valueType == Schema.DisplayType.Currency) {
-						obj.put(key, svalue == '' ? null : Decimal.valueOf(svalue));
-					} else if (valueType == Schema.DisplayType.Double) {
-						obj.put(key, svalue == '' ? null : Double.valueOf(svalue));
-					} else if (valueType == Schema.DisplayType.Integer) {
-						obj.put(key, Integer.valueOf(svalue));
-					} else if (valueType == Schema.DisplayType.Base64) {
-						obj.put(key, EncodingUtil.base64Decode(svalue.split(',')[1]));
-					} else {
-						obj.put(key, svalue);
-					}
-				} else {
-					// Just try putting the incoming value on the object
-					obj.put(key, value);
-				}
-			}
-		} catch (SObjectException soe) {
-			system.debug(soe.getMessage() + 'INVALID_FIELD');
-			//return makeError(soe.getMessage(), 'INVALID_FIELD');
-		}
+                    if (valueType == Schema.DisplayType.Date) {
+                        system.debug('doing ' + key + ' : ' + svalue);
+                        obj.put(key, Date.valueOf(svalue));
+                    } else if ( valueType == Schema.DisplayType.DateTime) {
+                        obj.put(key, DateTime.valueOf(svalue));
+                    } else if (valueType == Schema.DisplayType.Percent ||
+                               valueType == Schema.DisplayType.Currency) {
+                        obj.put(key, svalue == '' ? null : Decimal.valueOf(svalue));
+                    } else if (valueType == Schema.DisplayType.Double) {
+                        obj.put(key, svalue == '' ? null : Double.valueOf(svalue));
+                    } else if (valueType == Schema.DisplayType.Integer) {
+                        obj.put(key, Integer.valueOf(svalue));
+                    } else if (valueType == Schema.DisplayType.Base64) {
+                        obj.put(key, EncodingUtil.base64Decode(svalue.split(',')[1]));
+                    } else {
+                        obj.put(key, svalue);
+                    }
+                } else {
+                    // Just try putting the incoming value on the object
+                    obj.put(key, value);
+                }
+            }
+        } catch (SObjectException soe) {
+            system.debug(soe.getMessage() + 'INVALID_FIELD');
+            //return makeError(soe.getMessage(), 'INVALID_FIELD');
+        }
 
-		return null;
-	}
+        return null;
+    }
     
     public class picklistValues {
-		String label {get; set;}
-		String value {get; set;}
-	}
+        String label {get; set;}
+        String value {get; set;}
+    }
+
+    public class PRLexception extends exception {} 
     
 }

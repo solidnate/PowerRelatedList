@@ -12,7 +12,7 @@
         } catch(err){
             console.log(err);
             //intended to handle the "CSL is null scenario"
-            return null;
+            return [];
         }
     },
     
