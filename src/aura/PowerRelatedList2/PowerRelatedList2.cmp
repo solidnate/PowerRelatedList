@@ -19,7 +19,8 @@
     <aura:attribute name="displayFieldsArray" type="object[]"/>
     <aura:attribute name="pluralLabel" type="string"/>
     <aura:attribute name="sortState" type="object"/>
-    
+    <aura:attribute name="showSpinner" type="boolean" />
+
     <!--handler for filter changes-->
     <aura:handler name="change" value="{!v.filter}" action="{!c.filter}"/>
     <aura:handler event="ltng:selectSObject" action="{!c.handleSelect}"   />
@@ -61,5 +62,8 @@
         </div>
         <div class="slds-backdrop slds-backdrop--open"></div>
         <!-- <div class="slds-card__footer"><a href="javascript:void(0);">View All <span class="slds-assistive-text">entity type</span></a></div> -->
+    </aura:if>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner/>
     </aura:if>
 </aura:component>

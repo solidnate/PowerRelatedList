@@ -24,6 +24,7 @@
             //console.log(a.getReturnValue);           
             component.set("v.pluralLabel", a.getReturnValue());            
         });
+        action.setStorable();
         $A.enqueueAction(action);
     },
     
@@ -50,6 +51,7 @@
             //console.log(records);
             component.set("v.results", records);
             component.set("v.filteredResults", records); //initial unfiltered list
+            component.set("v.showSpinner", false);
         });
         $A.enqueueAction(action);        
     },

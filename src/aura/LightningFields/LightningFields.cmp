@@ -15,6 +15,7 @@
     <aura:attribute name="displayFieldsArray" type="object[]" />
     <aura:attribute name="editableFields" type="string"/>
     <aura:attribute name="chunks" type="object[]"/>
+    <aura:attribute name="showSpinner" type="boolean" default="true"/>
     
     <aura:iteration items="{!v.chunks}" var="chunk">
         <div class="slds-grid slds-wrap slds-grid--pull-padded chunk">
@@ -24,15 +25,16 @@
                     <!--show label-->                         
                     <label class="{!field.label == 'label' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.label }</label>
                     
-                    <aura:if isTrue="{!and(field.describe.help, field.label == 'label')}">   
+                     <aura:if isTrue="{!and(field.describe.help, field.label == 'label')}">   
                         
                         
-                        <lightning:icon iconName="utility:info" alternativeText="get help" size="x-small"/>
-                        <lightning:tooltip content="{!field.describe.help}">
-                            <span>&nbsp;</span>
-                        </lightning:tooltip>
+                        <span title="{!field.describe.help}">
+
+                            <lightning:icon iconName="utility:info" alternativeText="get help" size="x-small"/>
+                        </span>
+
                         
-                    </aura:if>
+                    </aura:if> 
                     
                     <!--show help-->
                     <label class="{!field.label == 'help' ? 'slds-form-element__label' : 'slds-hide'}" for="text-input-01">{!field.describe.help || field.describe.label}</label>
@@ -52,5 +54,8 @@
             </aura:iteration>
         </div>
     </aura:iteration>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner/>
+    </aura:if>
     {!v.body}
 </aura:component>

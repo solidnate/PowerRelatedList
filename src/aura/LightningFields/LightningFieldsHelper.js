@@ -79,6 +79,7 @@
             //first (and possibly only) setting. Will update if parent fields found
             component.set("v.displayFieldsArray", displayFieldsArray);   
             helper.chunk(component);
+            component.set("v.showSpinner", false);
             // console.log("done with normal fields");
             // console.log(displayFieldsArray);
             

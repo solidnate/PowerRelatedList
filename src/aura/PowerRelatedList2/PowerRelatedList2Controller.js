@@ -1,5 +1,6 @@
 ({
     doInit : function(component, event, helper) {
+        component.set("v.showSpinner", true);
         //TODO: do a cleanup on displayFields parameter to make sure it's not invalid (commas, spaces, etc)        
         //build the query
         

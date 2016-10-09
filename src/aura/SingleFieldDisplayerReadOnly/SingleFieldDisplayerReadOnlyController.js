@@ -25,8 +25,24 @@
             output = null;
         }
         
-        
-        if (fieldDescribe.describe.type === 'datetime'){
+        //this is some kind of html?
+        if (/<[a-z][\s\S]*>/i.test(output)){
+	        $A.createComponent(
+	        	"ui:outputRichText", 
+	        	{
+	        		"value" : output,
+	        		"linkify" : true
+
+	        	},
+	        	function (created, status){	            
+		            if (component.isValid()) {
+		            	var body = component.get("v.body");
+		            	body.push(created);
+		            	component.set("v.body", body);
+		            }
+	        	}        	        
+        	);
+	    } else if (fieldDescribe.describe.type === 'datetime'){
 	        $A.createComponent(
 	        	"ui:outputDateTime", 
 	        	{"value" : output},
