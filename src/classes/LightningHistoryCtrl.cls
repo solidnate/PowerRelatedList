@@ -59,8 +59,13 @@ public class LightningHistoryCtrl {
         for (sobject so:results){
             string field = (string)so.get('Field');
             Schema.DescribeFieldResult describe = fieldDescribeMap.get(field);
-            if (describe == null || describe.isAccessible()){
-                finalResults.add(so); 
+            if (
+                    (describe == null || describe.isAccessible()) //security check!
+                    &&
+                    ( (string)so.get('OldValue') != null || (string)so.get('NewValue') != null ) //hide the weird stuff with no values
+                
+                ){                
+                    finalResults.add(so); 
             } 
         }
         
