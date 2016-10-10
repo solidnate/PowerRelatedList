@@ -14,28 +14,22 @@ Handles all server-side errors.
 
 ## LightningFieldSection
 
-Drag onto a record detail page.  Pick the fields that are editable, the column quantity you want, etc.
-
-There's no save button--any change updates the database
-
-Use the component in AppBuilder for more info
-
-Handles all server-side errors.
+* Drag onto a record detail page.  Pick the fields that are editable, the column quantity you want, etc.
+* There's no save button--any change updates the database
+* Use the component in AppBuilder for more info
+* Handles all server-side errors.
+* **Does not respect your permissions**
 
 ## LightningHistory
 
-No inputs--just shows the field name, before, after, timestamp, and who changed it as a table.
-
-Respects field visibility
-
-Implement side-scrolling if used in a column too narrow for the table to display (like record detail sidebar)
+* No inputs--just shows the field name, before, after, timestamp, and who changed it as a table.
+* Respects field visibility
+* Uses side-scrolling if used in a column too narrow for the table to display (like record detail sidebar)
 
 ## Subcomponents for your hackery
 
 * LightingDataTable: pass it an array of variables, and you'll get a styled, sortable datatable
-
 * LightningFields: add quick-edit fields to anything with just attributes
-
 * LightningErrorHandlerPRL and its related event, handleCallbackError: handle validation rules, general errors, apex exceptions, dupe blocking, and more!
 
 <a href="https://githubsfdeploy.herokuapp.com">
