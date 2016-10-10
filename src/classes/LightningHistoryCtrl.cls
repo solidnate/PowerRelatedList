@@ -55,7 +55,7 @@ public class LightningHistoryCtrl {
             system.debug(fieldDescribeMap.get(s));
         }*/
 
-        //access check!
+        //access check, remove dual-null weirdness!
         for (sobject so:results){
             string field = (string)so.get('Field');
             Schema.DescribeFieldResult describe = fieldDescribeMap.get(field);
