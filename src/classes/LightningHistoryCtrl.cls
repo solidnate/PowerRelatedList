@@ -2,8 +2,6 @@ public class LightningHistoryCtrl {
 
     @AuraEnabled
     public static string getHistory(string objectAPIName, string recordId){ 
-
-        system.assertNotEquals(0, 0, 'wow, you really suck');
           
         string parentFieldName = getParentName(objectAPIName);
         string query = 'select field, NewValue, OldValue, CreatedDate, CreatedById from ' + getObjectHistoryName(objectAPIName) + ' where ' + parentFieldName + ' =\'' + recordId + '\' order by CreatedDate DESC limit 5000'; 
@@ -14,16 +12,11 @@ public class LightningHistoryCtrl {
         Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectAPIName);                
         Schema.DescribeSObjectResult sobjResult = targetType.getDescribe();        
         Map<String, Schema.SObjectField> fieldMap = sobjResult.fields.getMap();
-        system.debug(fieldMap);
+        //system.debug(fieldMap);
 
         map<String, Schema.DescribeFieldResult> fieldDescribeMap = new map<String, Schema.DescribeFieldResult>();
         
-
-        /*for (String key : fieldMap.keySet()) {
-            fieldDescribeMap.put(key, fieldMap.get(key).getDescribe());
-        }*/
-
-        system.debug(fieldDescribeMap);
+        //system.debug(fieldDescribeMap);
 
         set<string> resultsFields = new set<string>();
         set<string> referenceFields = new set<string>();
@@ -35,13 +28,12 @@ public class LightningHistoryCtrl {
 
         for (sobject so:results){
             userIds.add( (Id)so.get('CreatedById') ); //IDs will will become a usermap
-            resultsFields.add((string)so.get('Field')); //will become a list of fields to get describe for
-            
+            resultsFields.add((string)so.get('Field')); //will become a list of fields to get describe for            
         }
 
         //iterate the resultsFields and get their describe
-        /*for (string fieldName:resultsFields){
-            system.debug('resultField is ' + fieldName);
+        for (string fieldName:resultsFields){
+            //system.debug('resultField is ' + fieldName);
             try {
                 Schema.DescribeFieldResult descField = fieldMap.get(fieldName).getDescribe();
                 fieldDescribeMap.put(fieldName, descField);                
@@ -57,18 +49,26 @@ public class LightningHistoryCtrl {
             }            
         }
 
-        system.debug('fieldDescribeMap : ');
+        /*system.debug('fieldDescribeMap : ');
         for (string s:fieldDescribeMap.keySet()){
             system.debug(s);  
             system.debug(fieldDescribeMap.get(s));
         }*/
 
+        //access check!
+        for (sobject so:results){
+            string field = (string)so.get('Field');
+            Schema.DescribeFieldResult describe = fieldDescribeMap.get(field);
+            if (describe == null || describe.isAccessible()){
+                finalResults.add(so); 
+            } 
+        }
         
         map<id, user> userMap = new map<id, user>([select Name from User where id in:userIds]);
         
 
         resultsAndUserMap temp = new resultsAndUserMap();
-        temp.results = results;
+        temp.results = finalResults;
         temp.userMap = userMap;
         temp.parentFieldName = parentFieldName;
         temp.ObjectName = sobjResult.getLabel();

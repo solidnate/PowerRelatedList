@@ -1,6 +1,4 @@
-2 record page components in 1 repo !
-
-General notes--there is no error handling at all yet.  If you're violating rules or making non-sense requests, you'll see it in the browser console (hopefully?), but not in the UI.
+3 record page components in 1 repo !
 
 ## PowerRelatedList
 
@@ -12,6 +10,8 @@ PowerRelatedList2 has been refactored to have a datatable subcomponent.  You pas
 
 Query/Filtering is implemented at the PowerRelatedList2 level, not on the datatable itself.
 
+Handles all server-side errors.
+
 ## LightningFieldSection
 
 Drag onto a record detail page.  Pick the fields that are editable, the column quantity you want, etc.
@@ -20,11 +20,23 @@ There's no save button--any change updates the database
 
 Use the component in AppBuilder for more info
 
+Handles all server-side errors.
+
+## LightningHistory
+
+No inputs--just shows the field name, before, after, timestamp, and who changed it as a table.
+
+Respects field visibility
+
+Implement side-scrolling if used in a column too narrow for the table to display (like record detail sidebar)
+
 ## Subcomponents for your hackery
 
 * LightingDataTable: pass it an array of variables, and you'll get a styled, sortable datatable
 
 * LightningFields: add quick-edit fields to anything with just attributes
+
+* LightningErrorHandlerPRL and its related event, handleCallbackError
 
 <a href="https://githubsfdeploy.herokuapp.com">
   <img alt="Deploy to Salesforce"
