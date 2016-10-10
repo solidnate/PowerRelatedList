@@ -40,26 +40,26 @@
             "objtype" : component.get("v.objectName"), 
             "fields" :JSON.stringify(component.get("v.newRecord"))
         })
-        action.setCallback(self, function (a){
-            console.log("result of save")
+        action.setCallback(self, function (a){         
             
-            var response = JSON.parse(a.getReturnValue());            
-            console.log(response);
+            if (a.getState() === "SUCCESS") {
+                var response = JSON.parse(a.getReturnValue());
+                var results = component.get("v.results");
+                results.push(response.object);            
+                
+                component.set("v.results", results); //set results
+                helper.filter(component);
+                component.set("v.adding", false); //close the modal
+                helper.setNewRecord(component); //ready for next one
 
-            var results = component.get("v.results");
-            console.log("results without new");
-            console.log(results);
-            
-            results.push(response.object);
-            console.log("results with new");
-            console.log(results);
-
-            component.set("v.results", results);
-            helper.filter(component);
-			component.set("v.adding", false);
-            
-            
-            helper.setNewRecord(component); //ready for next one
+            } else if (a.getState() === "ERROR"){ //fires toasts with any issues
+                var appEvent = $A.get("e.c:handleCallbackErrorPRL");
+                appEvent.setParams({
+                    "errors" : a.getError(),
+                    "errorComponentName" : "PRL"
+                });
+                appEvent.fire(); 
+            }                        
         });
         $A.enqueueAction(action);
         

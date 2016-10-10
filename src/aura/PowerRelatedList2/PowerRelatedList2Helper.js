@@ -46,7 +46,7 @@
         var action = component.get("c.query");
         action.setParams({"soql" : soql});
         action.setCallback(self, function(a){
-            console.log("query results");	
+            //console.log("query results");	
             var records = JSON.parse(a.getReturnValue())
             //console.log(records);
             component.set("v.results", records);
@@ -58,13 +58,13 @@
 
     filter : function (component){
         var filter = component.get("v.filter");        
-        console.log("in debounced function");
-        console.log(filter);
+        //console.log("in debounced function");
+        //console.log(filter);
         if (!filter){
-            console.log("no filter");
+            //console.log("no filter");
             component.set("v.filteredResults", component.get("v.results"));    
         } else {
-            console.log("filter present: " + filter);
+            //console.log("filter present: " + filter);
             var goodStuff = _.filter(component.get("v.results"), function(record){
                 var contains = false;
                 _.forEach(record, function (value){

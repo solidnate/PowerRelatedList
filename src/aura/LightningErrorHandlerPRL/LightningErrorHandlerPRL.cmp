@@ -1,0 +1,5 @@
+<aura:component >
+	<aura:attribute name="errorHandlerName" type="string" required="false" description="if set, only toasts errors when the name matches" access="global"/>
+	<aura:handler event="c:handleCallbackErrorPRL" action="{!c.makeToast}"   />
+
+</aura:component>

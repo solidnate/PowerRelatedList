@@ -26,7 +26,14 @@
     <aura:handler event="ltng:selectSObject" action="{!c.handleSelect}"   />
     <aura:handler event="c:FieldChangeEvent" action="{!c.handleFieldChange}"   />
 
-    <lightning:card title="{!v.pluralLabel + ' (' + v.results.length + ')'}">
+    <!--error handling-->
+    <aura:registerEvent name="handleCallbackErrorPRL" type="c:handleCallbackErrorPRL"/>
+    <c:LightningErrorHandlerPRL errorHandlerName="PRL"/>
+
+    <lightning:card>    
+        <aura:set attribute="title">
+            {!v.pluralLabel + ' (' + v.results.length + ')'}
+        </aura:set>
         <aura:set attribute="actions">
             <div class="slds-form--inline">
                 <aura:if isTrue="{!v.showFilter}">      
