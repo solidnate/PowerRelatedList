@@ -93,7 +93,7 @@ public class LightningHistoryCtrl {
     
     private static string getObjectHistoryName(string objectAPIName){
         if (objectAPIName.contains('__c')){
-            return objectAPIName.replace('__c', 'History');
+            return objectAPIName.replace('__c', '__History');
         } 
         return objectAPIName + 'History';
 
