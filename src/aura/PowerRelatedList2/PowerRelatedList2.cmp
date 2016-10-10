@@ -8,6 +8,7 @@
     <aura:attribute name="showFilter" type="boolean" default="false"/>
     <aura:attribute name="allowAdd" type="boolean" default="true"/>
     <aura:attribute name="addRecordTypeId" type="string" default="01215000001MWZP" required="false"/>
+    <aura:attribute name="iconName" type="string"/>
     
     <!--internal only attributes-->
     <aura:attribute name="newRecord" type="object"/>
@@ -30,7 +31,7 @@
     <aura:registerEvent name="handleCallbackErrorPRL" type="c:handleCallbackErrorPRL"/>
     <c:LightningErrorHandlerPRL errorHandlerName="PRL"/>
 
-    <lightning:card>    
+    <lightning:card iconName="{!v.iconName}">    
         <aura:set attribute="title">
             {!v.pluralLabel + ' (' + v.results.length + ')'}
         </aura:set>
