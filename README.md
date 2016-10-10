@@ -36,7 +36,7 @@ Implement side-scrolling if used in a column too narrow for the table to display
 
 * LightningFields: add quick-edit fields to anything with just attributes
 
-* LightningErrorHandlerPRL and its related event, handleCallbackError
+* LightningErrorHandlerPRL and its related event, handleCallbackError: handle validation rules, general errors, apex exceptions, dupe blocking, and more!
 
 <a href="https://githubsfdeploy.herokuapp.com">
   <img alt="Deploy to Salesforce"
