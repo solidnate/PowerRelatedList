@@ -10,14 +10,12 @@
 	<types>
 		<members>FieldChangeEvent</members>
 		<members>LightningDataTable</members>
-		<members>LightningErrorHandler</members>
 		<members>LightningFieldSection</members>
 		<members>LightningFields</members>
 		<members>LightningHistory</members>
 		<members>PowerRelatedList2</members>
 		<members>SingleFieldDisplayer</members>
 		<members>SingleFieldDisplayerReadOnly</members>
-		<members>handleCallbackError</members>
 		<members>handleCallbackErrorPRL</members>
 		<members>LightningErrorHandlerPRL</members>
 		<name>AuraDefinitionBundle</name>
